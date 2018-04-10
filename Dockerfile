@@ -1,5 +1,4 @@
-FROM node:8-alpine
-MAINTAINER Ricky Dunlop <hello@rickydunlop.co.uk>
+FROM node:9.11.1-alpine
 
 ENV FFMPEG_VERSION=3.3.5
 RUN apk update && \
@@ -44,5 +43,14 @@ RUN apk update && \
     rm -rf /tmp/ffmpeg-${FFMPEG_VERSION} && \
     apk del --purge .build-dependencies && \
     rm -rf /var/cache/apk/*
+
+ENV PATH /root/.yarn/bin:$PATH
+RUN apk update \
+  && apk add curl bash binutils tar nano \
+  && rm -rf /var/cache/apk/* \
+  && /bin/bash \
+  && touch ~/.bashrc \
+  && curl -o- -L https://yarnpkg.com/install.sh | bash \
+  && apk del curl tar binutils
 
 CMD ["node"]
